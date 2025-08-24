@@ -105,10 +105,9 @@ function GetApplicationName {
 
     try {
        $productName = (Get-Item $exePath).VersionInfo.FileDescription.Trim() -replace '\s+', ' '
-    } finally {
-        if ([string]::IsNullOrEmpty($productName)) {
-            $productName = [System.IO.Path]::GetFileNameWithoutExtension($exePath)
-        }
+    } catch {}
+    if ([string]::IsNullOrEmpty($productName)) {
+        $productName = [System.IO.Path]::GetFileNameWithoutExtension($exePath)
     }
 
     return $productName
