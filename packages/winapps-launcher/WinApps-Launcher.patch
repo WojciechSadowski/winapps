@@ -9,3 +9,107 @@
  declare -rx APPDATA_PATH="${HOME}/.local/share/winapps"
  declare -rx CONFIG_PATH="${HOME}/.config/winapps"
  declare -rx CONFIG_FILE="${CONFIG_PATH}/winapps.conf"
+@@ -434,11 +434,11 @@
+         wait $!
+         echo -e "${DEBUG_TEXT}> STARTED '${VM_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "podman" ]]; then
+-        podman-compose --file "$COMPOSE_FILE" start &>/dev/null &
++        systemctl start "podman-${CONTAINER_NAME}.service" &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> STARTED '${CONTAINER_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "docker" ]]; then
+-        docker compose --file "$COMPOSE_FILE" start &>/dev/null &
++        systemctl start "docker-${CONTAINER_NAME}.service" &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> STARTED '${CONTAINER_NAME}'${RESET_TEXT}"
+     fi
+@@ -463,11 +463,11 @@
+             wait $!
+             echo -e "${DEBUG_TEXT}> POWERED OFF '${VM_NAME}'${RESET_TEXT}"
+         elif [[ "$WAFLAVOR" == "podman" ]]; then
+-            podman-compose --file "$COMPOSE_FILE" stop &>/dev/null &
++            systemctl stop "podman-${CONTAINER_NAME}.service" &>/dev/null &
+             wait $!
+             echo -e "${DEBUG_TEXT}> POWERED OFF '${CONTAINER_NAME}'${RESET_TEXT}"
+         elif [[ "$WAFLAVOR" == "docker" ]]; then
+-            docker compose --file "$COMPOSE_FILE" stop &>/dev/null &
++            systemctl stop "docker-${CONTAINER_NAME}.service" stop &>/dev/null &
+             wait $!
+             echo -e "${DEBUG_TEXT}> POWERED OFF '${CONTAINER_NAME}'${RESET_TEXT}"
+         fi
+@@ -493,11 +493,11 @@
+             wait $!
+             echo -e "${DEBUG_TEXT}> PAUSED '${VM_NAME}'${RESET_TEXT}"
+         elif [[ "$WAFLAVOR" == "podman" ]]; then
+-            podman-compose --file "$COMPOSE_FILE" pause &>/dev/null &
++            podman pause "$CONTAINER_NAME" &>/dev/null &
+             wait $!
+             echo -e "${DEBUG_TEXT}> PAUSED '${CONTAINER_NAME}'${RESET_TEXT}"
+         elif [[ "$WAFLAVOR" == "docker" ]]; then
+-            docker compose --file "$COMPOSE_FILE" pause &>/dev/null &
++            docker pause "$CONTAINER_NAME" &>/dev/null &
+             wait $!
+             echo -e "${DEBUG_TEXT}> PAUSED '${CONTAINER_NAME}'${RESET_TEXT}"
+         fi
+@@ -519,11 +519,11 @@
+         wait $!
+         echo -e "${DEBUG_TEXT}> RESUMED '${VM_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "podman" ]]; then
+-        podman-compose --file "$COMPOSE_FILE" unpause &>/dev/null &
++        podman unpause "$CONTAINER_NAME" &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> RESUMED '${CONTAINER_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "docker" ]]; then
+-        docker compose --file "$COMPOSE_FILE" unpause &>/dev/null &
++        docker unpause "$CONTAINER_NAME" &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> RESUMED '${CONTAINER_NAME}'${RESET_TEXT}"
+     fi
+@@ -544,15 +544,11 @@
+         wait $!
+         echo -e "${DEBUG_TEXT}> RESET '${VM_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "podman" ]]; then
+-        podman-compose --file "$COMPOSE_FILE" kill &>/dev/null &
+-        wait $!
+-        podman-compose --file "$COMPOSE_FILE" start &>/dev/null &
++        podman kill "$CONTAINER_NAME" &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> RESET '${CONTAINER_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "docker" ]]; then
+-        docker compose --file "$COMPOSE_FILE" kill &>/dev/null &
+-        wait $!
+-        docker compose --file "$COMPOSE_FILE" start &>/dev/null &
++        docker kill "$CONTAINER_NAME" &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> RESET '${CONTAINER_NAME}'${RESET_TEXT}"
+     fi
+@@ -577,11 +573,11 @@
+             wait $!
+             echo -e "${DEBUG_TEXT}> RESTARTED '${VM_NAME}'${RESET_TEXT}"
+         elif [[ "$WAFLAVOR" == "podman" ]]; then
+-            podman-compose --file "$COMPOSE_FILE" restart &>/dev/null &
++            podman restart "$CONTAINER_NAME" &>/dev/null &
+             wait $!
+             echo -e "${DEBUG_TEXT}> RESTARTED '${CONTAINER_NAME}'${RESET_TEXT}"
+         elif [[ "$WAFLAVOR" == "docker" ]]; then
+-            docker compose --file "$COMPOSE_FILE" restart &>/dev/null &
++            docker restart "$CONTAINER_NAME" &>/dev/null &
+             wait $!
+             echo -e "${DEBUG_TEXT}> RESTARTED '${CONTAINER_NAME}'${RESET_TEXT}"
+         fi
+@@ -603,11 +599,13 @@
+         wait $!
+         echo -e "${DEBUG_TEXT}> FORCE STOPPED '${VM_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "podman" ]]; then
+-        podman-compose --file "$COMPOSE_FILE" kill &>/dev/null &
++				podman kill "$CONTAINER_NAME" &>/dev/null &
++				systemctl stop "podman-${CONTAINER_NAME}.service" stop &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> FORCE STOPPED '${CONTAINER_NAME}'${RESET_TEXT}"
+     elif [[ "$WAFLAVOR" == "docker" ]]; then
+-        docker compose --file "$COMPOSE_FILE" kill &>/dev/null &
++				docker kill "$CONTAINER_NAME" &>/dev/null &
++				systemctl stop "docker-${CONTAINER_NAME}.service" stop &>/dev/null &
+         wait $!
+         echo -e "${DEBUG_TEXT}> FORCE STOPPED '${CONTAINER_NAME}'${RESET_TEXT}"
+     fi
