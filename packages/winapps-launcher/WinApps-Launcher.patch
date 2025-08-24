@@ -9,6 +9,24 @@
  declare -rx APPDATA_PATH="${HOME}/.local/share/winapps"
  declare -rx CONFIG_PATH="${HOME}/.config/winapps"
  declare -rx CONFIG_FILE="${CONFIG_PATH}/winapps.conf"
+@@ -361,7 +361,7 @@
+             STATE="ON"
+         elif [[ "$STATE" == "paused" ]]; then
+             STATE="PAUSED"
+-        elif [[ "$STATE" == "exited" ]] || [[ "$STATE" == "created" ]]; then
++        elif [[ "$STATE" == "exited" ]] || [[ "$STATE" == "created" ]] || [[ "$STATE" == "" ]]; then
+             STATE="OFF"
+         fi
+     elif [[ "$WAFLAVOR" == "docker" ]]; then
+@@ -375,7 +375,7 @@
+             STATE="ON"
+         elif [[ "$STATE" == "paused" ]]; then
+             STATE="PAUSED"
+-        elif [[ "$STATE" == "exited" ]] || [[ "$STATE" == "created" ]]; then
++        elif [[ "$STATE" == "exited" ]] || [[ "$STATE" == "created" ]] || [[ "$STATE" == "" ]]; then
+             STATE="OFF"
+         fi
+     fi
 @@ -434,11 +434,11 @@
          wait $!
          echo -e "${DEBUG_TEXT}> STARTED '${VM_NAME}'${RESET_TEXT}"
